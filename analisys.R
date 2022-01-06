@@ -47,7 +47,8 @@ ggplot(ageAndGender, aes(x = Age, y = n, fill = Gender)) +
   theme_minimal()+
   theme(
     legend.text = element_text(size=11)
-  )
+  )+
+  geom_vline(aes(xintercept = mean(as.numeric(Age))), color="red")+
   ggtitle("Età & Genere","Vittime raggruppate per età e sesso")
 
 
@@ -86,21 +87,9 @@ genderRace <- policesViolence %>%
 
 # basic treemap
 treemap(genderRace,
-             index=c("Gender","Race"),
-             vSize="n",
-             type="index",
-             fontsize.labels=c(17,13),
-             fontcolor.labels=c("white","black"),
-             fontface.labels=c(2,3),
-             bg.labels=c("transparent"), 
-             align.labels=list(
-               c("center", "center"), 
-               c("right", "bottom")
-             ),
-             border.col=c("black","white"),
-             border.lwds=c(0,1),
-          title = "Per sesso ed etnia",
-        palette="Set1"
+        index=c("Gender","Race"),
+        vSize="n",
+        type="index"
 )
 
 byRace <- policesViolence%>%
@@ -108,7 +97,7 @@ byRace <- policesViolence%>%
   summarise(n=n()) %>%
   arrange(-n)
 colnames(byRace) <- c("Race","n")
-names(byRace$n) = paste(byRace$Race, "-", byRace$n)
+names(byRace$n) = paste0(byRace$Race, "-", byRace$n, " [",round(byRace$n/sum(byRace$n)*100),"%]")
 waffle(round(byRace$n/sum(byRace$n)*100), rows=length(byRace$Race), colors = c("#0b827c", "#707070", "black", "#BD0026","#d8ce15","#15b8d8","pink"), legend_pos = "bottom", title = "Etnia in percentuale")
 
 
@@ -134,6 +123,8 @@ ggplot(yearAndRace, aes(x = anno, y = n, group=Race, colour=Race))+
 
 
 ############################################
+
+
 ############################################
 
 #PER ANNO, osservazioni memorizzate come mese/giorno/anno -> splittiamo
@@ -294,22 +285,4 @@ sankeyRWI <- sankeyNetwork(Links = links, Nodes = nodes,
                    )
 
 sankeyRWI
-
-sankey_rendered <- htmlwidgets::onRender(sankeyRWI,
-                                         'function(el, x) {
-    d3.selectAll(".node text")
-        .style("fill", "white");
-        
-  }'
-)
-sankey_rendered <- htmlwidgets::onRender(sankeyRWI,
-                                         'function(el, x) {
-    d3.selectAll(".link source")
-        .style("fill", "pink");
-        
-  }'
-)
-
-# show
-sankey_rendered
 

@@ -1,27 +1,11 @@
-Analisi che voglio fare.
 
 
+colore rosso: #7f1f2b
 
-
-dire che ho 30k di persone
-1) età e genere (**OK**)
-2) razza ed età (**ook**)
-2.1) razza complessiva (**waffle da fixare**)
-
-4) per anni (**OOK**)
-5) blm (**OOK**)
-
-6) stati e città (**ook**)
-7) plotly interactive (**OOK**)
-
-8) armati?
-conclusioni
-
-
-
--------
-
-
-
-
-#7f1f2b
+TODO: 
+1) vedere se vanno bene i 3 calendari
+1.2) fare una prova di presentazione (cronometrato)
+2) rimuovere la cornice da svg-main
+3) fixare il sankey un pochetto
+4) cambiare il colore del titolo
+5) sistemare git

@@ -7,6 +7,7 @@ output:
     theme: blood
     center: true
     margin: 0.02
+    controls: false
 ---
 
 
@@ -22,7 +23,8 @@ Il <a href="https://fatalencounters.org/">dataset</a> utilizzato raccoglie più 
 
 
 ```{r, echo = FALSE}
-setwd("/Volumes/Archive/uni/DataScience/policesViolence")
+#ATTENZIONE: working directory cambiata, da modificare se si sposta il progetto
+setwd("/Volumes/Archive/uni/DataScience/policesViolence") 
 library(dplyr)
 library(ggplot2)
 library(waffle)
@@ -53,9 +55,9 @@ policesViolence$Location.of.death..city.[which(policesViolence$Location.of.death
 
 policesViolence$Foreknowledge.of.mental.illness..INTERNAL.USE..NOT.FOR.ANALYSIS[which(policesViolence$Foreknowledge.of.mental.illness..INTERNAL.USE..NOT.FOR.ANALYSIS=="")]="NA"
 
-policesViolence$date<-format(as.Date(policesViolence$Date.of.injury.resulting.in.death..month.day.year., '%m/%d/%Y'), "%Y/%m/%d")
+policesViolence$date<-format(as.Date(policesViolence$Date.of.injury.resulting.in.death..month.day.year., '%m/%d/%Y'), "%Y/%m/%d") #creo la proprietà data che verrà utilizzata numerose volte
 policesViolence <- policesViolence %>%
-  filter(format(as.Date(date, "%Y/%m/%d"),"%Y")<2022)
+  filter(format(as.Date(date, "%Y/%m/%d"),"%Y")<2022) #vi è un'osservazione placeholder con data 2200, rimuoviamola
 
 ```
 
@@ -69,6 +71,7 @@ sumGender <- policesViolence %>%
   summarise ( totali = n()) %>%
   arrange(-totali)
 
+#creo una semplice percentuale
 sumGender<-sumGender %>%
   mutate(percentuale=round(totali/sum(sumGender$totali)*100, digits=2))
   
@@ -108,51 +111,47 @@ ggplot(ageAndGender, aes(x = Age, y = n, fill = Gender)) +
 
 
 ## L'etnia
-
 ```{r, echo=FALSE}
 genderRace <- policesViolence %>%
   group_by(Gender, Race) %>%
   summarise(n=n()) %>%
   arrange(-n)
 
-# basic treemap
+# treemap per razza e sottocategoria il genere
 treemap(genderRace,
-             index=c("Gender","Race"),
-             vSize="n",
-             type="index",
-             fontsize.labels=c(17,13),
-             fontcolor.labels=c("white","black"),
-             fontface.labels=c(2,3),
-             bg.labels=c("transparent"), 
-             align.labels=list(
-               c("center", "center"), 
-               c("right", "bottom")
-             ),
-             border.col=c("black","white"),
-             border.lwds=c(0,1),
-          title = "Per sesso ed etnia",
-        palette="Set1"
+        index=c("Race","Gender"),
+        vSize="n",
+        type="index",
+        fontsize.labels=c(17,13),
+        fontcolor.labels=c("white","black"),
+        fontface.labels=c(2,3),
+        bg.labels=c("transparent"), 
+        align.labels=list(
+          c("center", "center"), 
+          c("right", "bottom")
+        ),
+        border.col=c("black","white"),
+        border.lwds=c(0,1),
+        title = "Per sesso ed etnia",
+        palette="Set2"
 )
 ```
 
 ## Razzismo?
-
-
-<small>La popolazione di carnagione nera/scura negli USA è di ~40 milioni nel 2020
-<br>
-Mentre la popolazione bianca è di ~200 milioni
+<small>
+Popolazione di carnagione nera/scura negli USA è di ~40 milioni nel 2020, mentre di ~200 milioni per la popolazione bianca.
 </small>
 ```{r, echo=FALSE}
 byRace <- policesViolence%>%
   group_by(Race) %>%
   summarise(n=n()) %>%
   arrange(-n)
-colnames(byRace) <- c("Race","n")
-names(byRace$n) = paste0(byRace$Race, "-", byRace$n, " [",round(byRace$n/sum(byRace$n)*100),"%]")
+
+colnames(byRace) <- c("Race","n") #fondamentale
+names(byRace$n) = paste0(byRace$Race, "-", byRace$n, " [",round(byRace$n/sum(byRace$n)*100),"%]") #aggiungo la quantità e la percentuale di ogni razza al nome
+
 waffle(round(byRace$n/sum(byRace$n)*100), rows=length(byRace$Race), colors = c("#0b827c", "#707070", "black", "#BD0026","#d8ce15","#15b8d8","pink"), legend_pos = "right", title = "Etnie distribuite su 100 elementi")
 ```
-
-
 
 ## Le etnie negli anni
 ```{r, echo=FALSE}
@@ -161,12 +160,11 @@ yearAndRace <- policesViolence %>%
   group_by(Race, anno) %>%
   summarise(n=n())
 
-
 ggplot(yearAndRace, aes(x = anno, y = n, group=Race, colour=Race))+
   geom_line(size=1.2)+
   scale_color_manual(values=c("black", "#d8ce15", "#0b827c", "#BD0026","pink","#15b8d8","#707070"))+
   labs(x = "Anno",
-       y = "Numero vittime",
+       y = "Numero di vittime",
        colour = "Race")+
   theme_minimal()+
   theme(
@@ -177,9 +175,9 @@ ggplot(yearAndRace, aes(x = anno, y = n, group=Race, colour=Race))+
 
 ## Un complessivo temporale
 ```{r, echo=FALSE}
-
+#mi servirà creare una variabile anno per poter raggruppare per esso
 groupedYears <- policesViolence %>%
-  mutate(anno=format(as.Date(date, "%Y/%m/%d"),"%Y")) %>%
+  mutate(anno=format(as.Date(date, "%Y/%m/%d"),"%Y")) %>% 
   group_by(anno) %>%
   summarise (n=n())
 
@@ -202,6 +200,7 @@ ggplot(groupedYears, aes(x = anno, y = n, group=1)) +
 
 ## BLM Effect
 ```{r, echo=FALSE}
+#le osservazioni arrivano fino a dicembre 2021, mi fermo ad ottobre, mi interessa vedere un range temporale ridotto -> 1 anno prima e 1 anno e mezzo dopo dell'inizio delle proteste
 blmYears <- policesViolence%>%
   mutate(AnnoMese = format(as.Date(date, "%Y/%m/%d"),"%Y/%m"))%>%
   filter(AnnoMese > "2019/02", AnnoMese < "2021/10")%>% 
@@ -221,13 +220,15 @@ ggplot(blmYears, aes(x=AnnoMese, y=n)) +
   annotate(geom="point", x="2020/05", y=215, size=10, shape=21, fill="transparent")+
   geom_hline(aes(yintercept=mean(n)), color="#2681e2", size=0.7)+
   xlab("mese/anno") +
-  ylab("numero di vittime")+
-  ggtitle("BLM effect", "Prima e dopo le proteste BLM")
+  ylab("Numero di vittime")+
+  ggtitle("Prima e dopo le proteste BLM", "Movimento BLM fondato nel 2013")
 ```
 
 ## Giorni e festività
 ```{r, echo=FALSE}
-  dayInTheYear <- policesViolence %>%
+#vediamo se c'è una correlazione tra festività e quantità di vittime, me l'aspetterei poiché nei giorni festivi vi sono più persone "in giro" che festeggiano quindi più potenziali vittime.. anche se non è una cosa matematica, un poliziotto cattivo probabilmente vedendo tante persone non effettua un abuso di forza (davanti a un vasto pubblico pronto a fermarlo etc.)
+
+dayInTheYear <- policesViolence %>%
   filter(format(as.Date(date, "%Y/%m/%d"),"%Y")==2020) %>%
   mutate(day = format(as.Date(date, "%Y/%m/%d"), "%j")) %>%
   group_by(day) %>%
@@ -235,11 +236,11 @@ ggplot(blmYears, aes(x=AnnoMese, y=n)) +
   arrange(-n)
 
 calendR(
-        orientation = "portrait", # Equivalent to: orientation = "p"
+        orientation = "portrait", 
         months.pos = 0,
-        year = 2020,# Year
+        year = 2020,
         start = "M",
-        special.days = as.numeric(head(dayInTheYear$day,50)),
+        special.days = as.numeric(head(dayInTheYear$day,50)), #tagliamo a top 50 
         special.col =  "#BD0026",
         low.col = "#a1a2af",
         subtitle = "I 50 giorni con più vittime del 2020",
@@ -249,7 +250,7 @@ calendR(
 
 ## Non fraintendete
 ```{r, echo=FALSE}
-  everyDay2020 <- policesViolence %>%
+everyDay2020 <- policesViolence %>%
   filter(format(as.Date(date, "%Y/%m/%d"),"%Y")==2020) %>%
   mutate(day = format(as.Date(date, "%Y/%m/%d"), "%j")) %>%
   group_by(day) %>%
@@ -257,9 +258,9 @@ calendR(
   arrange(-n)
 
 calendR(
-        orientation = "portrait", # Equivalent to: orientation = "p"
+        orientation = "portrait",
         months.pos = 0,
-        year = 2020,# Year
+        year = 2020,
         start = "M",
         special.days = as.numeric(everyDay2020$day),
         special.col =  "#BD0026",
@@ -271,7 +272,7 @@ calendR(
 
 ## E nel 2021?
 ```{r, echo=FALSE}
-  everyDay2021 <- policesViolence %>%
+everyDay2021 <- policesViolence %>%
   filter(format(as.Date(date, "%Y/%m/%d"),"%Y")==2021) %>%
   mutate(day = format(as.Date(date, "%Y/%m/%d"), "%j")) %>%
   group_by(day) %>%
@@ -279,37 +280,37 @@ calendR(
   arrange(-n)
 
 calendR(
-        orientation = "portrait", # Equivalent to: orientation = "p"
+        orientation = "portrait",
         months.pos = 0,
-        year = 2021,# Year
+        year = 2021,
         start = "M",
         special.days = as.numeric(everyDay2021$day),
         special.col =  "#BD0026",
         low.col = "#a1a2af",
-        title = "Non è cambiato molto",
-        subtitle= "Tutti i giorni del 2021"
+        subtitle = "Non è cambiato molto",
+        title= "Tutti i giorni del 2021"
         )
 ```
 
 ## Stati e regioni
 ```{r, echo=FALSE}
-  groupedByState <- policesViolence %>%
+groupedByState <- policesViolence %>%
   group_by(State) %>%
   summarise(n=n()) %>%
   arrange(-n)
 
-colnames(groupedByState) <- c("state","n")
+colnames(groupedByState) <- c("state","n") 
 
 plot_usmap(data = groupedByState, values = "n", color = "red") + 
   scale_fill_continuous(low = "white", high = "red", name = "Numero di vittime", label = scales::comma) + 
-  labs(title = "Heatmap degli stati", subtitle = "Il numero di vittime diviso per stato") +
+  labs(title = "Heatmap degli stati", subtitle = "Quantità di vittime raggruppata per stato") +
   theme(legend.position = "right")
 ```
 
 ## x&y dei crimini
 <div id="mapWidget" style="width=100%; height=100%; margin-left: 90px">
 ```{r, echo=FALSE}
-
+#semplicemente sfrutto le coordinate Latitudine e Longitudine poiché mi sono state fornite
 usaMapInter <- policesViolence %>%
   plot_ly(
     lat= ~policesViolence$Latitude,
@@ -330,12 +331,14 @@ usaMapInter
 ## Etnia, Causa e Minaccia
 <div id="sankey" style="background-color: white; width=100%; height=100%; margin-left: 100px">
 ```{r, echo=FALSE}
+#raggruppimo per etnia, causa del decesso, mental illness (se la vittima era in una condizione mentale particolare).
+#Mental illness interpretato come minaccia per l'agente di polizia, poiché una persona sotto sostanze stupefacenti solitamente ha un probabilità più alta di essere pericoloso rispetto a una persona mentalmente sobria.
 RaceWeaponIllness <- policesViolence %>%
   group_by(Race, Highest.level.of.force, Foreknowledge.of.mental.illness..INTERNAL.USE..NOT.FOR.ANALYSIS) %>%
   summarise (n=n()) %>%
   arrange(-n)
 
-
+#siccome voglio creare il Sankey a 3 livelli, devo mettere la destinazione (target) del livello intermedio anche come partenza (source) per il livello finale
 links<- data.frame(
   source= c(RaceWeaponIllness$Race, RaceWeaponIllness$Highest.level.of.force),
   target= c(RaceWeaponIllness$Highest.level.of.force, RaceWeaponIllness$Foreknowledge.of.mental.illness..INTERNAL.USE..NOT.FOR.ANALYSIS),
@@ -352,7 +355,7 @@ sankeyRWI <- sankeyNetwork(Links = links, Nodes = nodes,
                    Source = "IDsource", Target = "IDtarget",
                    Value = "value", NodeID = "name", 
                    sinksRight=TRUE, fontSize = 9, nodeWidth = 8,
-                   )
+                   ) #attenzione a fontSize, è un widgetHTML quindi il browser può modificare la dimensione in base alle impostazioni personalizzate
 
 sankeyRWI
 ```

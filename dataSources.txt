@@ -1,0 +1,15 @@
+NYtimes - inizio proteste:
+	https://www.nytimes.com/interactive/2020/07/03/us/george-floyd-protests-crowd-size.html
+
+dataset:
+	
+
+popolazione:
+	https://www.pewresearch.org/social-trends/fact-sheet/facts-about-the-us-black-population/?menuItem=a10c1812-3110-463e-b262-5d4eb21167b3
+
+	https://en.wikipedia.org/wiki/African_Americans#Demographics
+
+https://blackdemographics.com/
+
+
+https://en.wikipedia.org/wiki/White_Americans#Demographic_information

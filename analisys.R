@@ -87,9 +87,21 @@ genderRace <- policesViolence %>%
 
 # basic treemap
 treemap(genderRace,
-        index=c("Gender","Race"),
+        index=c("Race","Gender"),
         vSize="n",
-        type="index"
+        type="index",
+        fontsize.labels=c(17,13),
+        fontcolor.labels=c("white","black"),
+        fontface.labels=c(2,3),
+        bg.labels=c("transparent"), 
+        align.labels=list(
+          c("center", "center"), 
+          c("right", "bottom")
+        ),
+        border.col=c("black","white"),
+        border.lwds=c(0,1),
+        title = "Per sesso ed etnia",
+        palette="Set2"
 )
 
 byRace <- policesViolence%>%

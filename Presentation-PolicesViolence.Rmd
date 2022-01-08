@@ -1,7 +1,7 @@
 ---
 title: "Police's violence in the US"
 author: "Alberto Morini"
-date: "12/11/2021"
+date: "18/02/2022"
 output: 
   revealjs::revealjs_presentation:
     theme: blood
@@ -10,17 +10,15 @@ output:
     controls: false
 ---
 
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 ```
 
 
 ## Intro
-Negli USA nel 2021 vi sono ~330 milioni di persone.
+La popolazione degli USA nel 2021 risale a ~330 milioni.
 
-Il <a href="https://fatalencounters.org/">dataset</a> utilizzato raccoglie più di 30 mila vittime commesse dal 2000 fino a metà dicembre 2021.
-
+Il <a href="https://fatalencounters.org/">dataset</a> utilizzato raccoglie più di 30 mila vittime, dal 2000 fino a metà dicembre 2021.
 
 ```{r, echo = FALSE}
 #ATTENZIONE: working directory cambiata, da modificare se si sposta il progetto
@@ -63,7 +61,6 @@ policesViolence <- policesViolence %>%
 
  
 ## Chi sono le vittime?
-
 ```{r, echo=FALSE}
 
 sumGender <- policesViolence %>%
@@ -88,6 +85,7 @@ ggplot(sumGender, aes(x="", y=totali, fill=paste(Gender, "-",percentuale,"%"))) 
   scale_fill_manual(values=c("#cf91ea","#226696","red","green"))+
   ggtitle("Per genere","Totale delle vittime suddivise per sesso")
 ```
+
 
 ## Qual è l'età?
 ```{r, echo=FALSE}
@@ -137,10 +135,8 @@ treemap(genderRace,
 )
 ```
 
+
 ## Razzismo?
-<small>
-Popolazione di carnagione nera/scura negli USA è di ~40 milioni nel 2020, mentre di ~200 milioni per la popolazione bianca.
-</small>
 ```{r, echo=FALSE}
 byRace <- policesViolence%>%
   group_by(Race) %>%
@@ -152,6 +148,10 @@ names(byRace$n) = paste0(byRace$Race, "-", byRace$n, " [",round(byRace$n/sum(byR
 
 waffle(round(byRace$n/sum(byRace$n)*100), rows=length(byRace$Race), colors = c("#0b827c", "#707070", "black", "#BD0026","#d8ce15","#15b8d8","pink"), legend_pos = "right", title = "Etnie distribuite su 100 elementi")
 ```
+<small>
+Nel 2020: popolazione con carnagione nera/scura è ~40mln, carnagione bianca ~200mln
+</small>
+
 
 ## Le etnie negli anni
 ```{r, echo=FALSE}
@@ -173,7 +173,8 @@ ggplot(yearAndRace, aes(x = anno, y = n, group=Race, colour=Race))+
   ggtitle("Anni & Etnie", "Le vittime divise per etnia negli anni")
 ```
 
-## Un complessivo temporale
+
+## Il totale negli anni
 ```{r, echo=FALSE}
 #mi servirà creare una variabile anno per poter raggruppare per esso
 groupedYears <- policesViolence %>%
@@ -197,6 +198,7 @@ ggplot(groupedYears, aes(x = anno, y = n, group=1)) +
   )+
   geom_vline(aes(xintercept="2020"), color="#2681e2", size=0.5)
 ```
+
 
 ## BLM Effect
 ```{r, echo=FALSE}
@@ -224,6 +226,7 @@ ggplot(blmYears, aes(x=AnnoMese, y=n)) +
   ggtitle("Prima e dopo le proteste BLM", "Movimento BLM fondato nel 2013")
 ```
 
+
 ## Giorni e festività
 ```{r, echo=FALSE}
 #vediamo se c'è una correlazione tra festività e quantità di vittime, me l'aspetterei poiché nei giorni festivi vi sono più persone "in giro" che festeggiano quindi più potenziali vittime.. anche se non è una cosa matematica, un poliziotto cattivo probabilmente vedendo tante persone non effettua un abuso di forza (davanti a un vasto pubblico pronto a fermarlo etc.)
@@ -248,49 +251,6 @@ calendR(
         )
 ```
 
-## Non fraintendete
-```{r, echo=FALSE}
-everyDay2020 <- policesViolence %>%
-  filter(format(as.Date(date, "%Y/%m/%d"),"%Y")==2020) %>%
-  mutate(day = format(as.Date(date, "%Y/%m/%d"), "%j")) %>%
-  group_by(day) %>%
-  summarise(n=n()) %>%
-  arrange(-n)
-
-calendR(
-        orientation = "portrait",
-        months.pos = 0,
-        year = 2020,
-        start = "M",
-        special.days = as.numeric(everyDay2020$day),
-        special.col =  "#BD0026",
-        low.col = "#a1a2af",
-        subtitle = "Una vittima ogni giorno",
-        title= "Tutti giorni del 2020"
-        )
-```
-
-## E nel 2021?
-```{r, echo=FALSE}
-everyDay2021 <- policesViolence %>%
-  filter(format(as.Date(date, "%Y/%m/%d"),"%Y")==2021) %>%
-  mutate(day = format(as.Date(date, "%Y/%m/%d"), "%j")) %>%
-  group_by(day) %>%
-  summarise(n=n()) %>%
-  arrange(-n)
-
-calendR(
-        orientation = "portrait",
-        months.pos = 0,
-        year = 2021,
-        start = "M",
-        special.days = as.numeric(everyDay2021$day),
-        special.col =  "#BD0026",
-        low.col = "#a1a2af",
-        subtitle = "Non è cambiato molto",
-        title= "Tutti i giorni del 2021"
-        )
-```
 
 ## Stati e regioni
 ```{r, echo=FALSE}
@@ -306,6 +266,7 @@ plot_usmap(data = groupedByState, values = "n", color = "red") +
   labs(title = "Heatmap degli stati", subtitle = "Quantità di vittime raggruppata per stato") +
   theme(legend.position = "right")
 ```
+
 
 ## x&y dei crimini
 <div id="mapWidget" style="width=100%; height=100%; margin-left: 90px">
@@ -328,6 +289,8 @@ usaMapInter <- usaMapInter %>%
 usaMapInter
 ```
 </div>
+
+
 ## Etnia, Causa e Minaccia
 <div id="sankey" style="background-color: white; width=100%; height=100%; margin-left: 100px">
 ```{r, echo=FALSE}
@@ -360,6 +323,7 @@ sankeyRWI <- sankeyNetwork(Links = links, Nodes = nodes,
 sankeyRWI
 ```
 </div>
+
 
 ## Grazie dell' attenzione
 

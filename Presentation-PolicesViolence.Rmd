@@ -1,5 +1,5 @@
 ---
-title: "Police's violence in the US"
+title: "Police's violence in the USA"
 author: "Alberto Morini"
 date: "18/02/2022"
 output: 
@@ -146,7 +146,7 @@ byRace <- policesViolence%>%
 colnames(byRace) <- c("Race","n") #fondamentale
 names(byRace$n) = paste0(byRace$Race, "-", byRace$n, " [",round(byRace$n/sum(byRace$n)*100),"%]") #aggiungo la quantità e la percentuale di ogni razza al nome
 
-waffle(round(byRace$n/sum(byRace$n)*100), rows=length(byRace$Race), colors = c("#0b827c", "#707070", "black", "#BD0026","#d8ce15","#15b8d8","pink"), legend_pos = "right", title = "Etnie distribuite su 100 elementi")
+waffle(round(byRace$n/sum(byRace$n)*100), rows=10, colors = c("#0b827c", "#707070", "black", "#BD0026","#d8ce15","#15b8d8","pink"), legend_pos = "right", title = "Etnie distribuite su 100 elementi")
 ```
 <small>
 Nel 2020: popolazione con carnagione nera/scura è ~40mln, carnagione bianca ~200mln
@@ -190,6 +190,7 @@ ggplot(groupedYears, aes(x = anno, y = n, group=1)) +
   annotate(geom="text", x="2020/05", y=1500, label="George Floyd", color="#BD0026", size=4.5)+
   annotate(geom="point", x="2020/05", y=1470, color="#BD0026") +
   ylab("Numero di vittime")+
+  xlab("Anno")+
   ggtitle("Negli anni", "Dal 2000 al 2021")+
   theme_minimal()+
   theme(
@@ -221,7 +222,7 @@ ggplot(blmYears, aes(x=AnnoMese, y=n)) +
   annotate(geom="text", x="2020/05", y=230, label="'Inizio' delle proteste")+
   annotate(geom="point", x="2020/05", y=215, size=10, shape=21, fill="transparent")+
   geom_hline(aes(yintercept=mean(n)), color="#2681e2", size=0.7)+
-  xlab("mese/anno") +
+  xlab("Mese/Anno") +
   ylab("Numero di vittime")+
   ggtitle("Prima e dopo le proteste BLM", "Movimento BLM fondato nel 2013")
 ```

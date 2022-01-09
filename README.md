@@ -3,11 +3,14 @@ Repository for the project of the course Data Science (Fondamenti di Scienza dei
 
 All the project is made in Italian language.
 
+## Repository
+* analisys.R è esattamente lo stesso codice della presentazione salvo il markdown, usato per comodità per test vari
+* Presentation-PolicesViolence.Rmd è il file Rmd usato per la creazione della presentazione per l'esame
+
 ## Dataset: 
  link: https://fatalencounters.org/
  `(tools> download complete dataset)`
  Quello utilizzato (scaricato il 30/12/2021) è nella repository (fatalEncountersDotOrg.csv)
-
 
 ## Info sources
 
@@ -21,6 +24,3 @@ All the project is made in Italian language.
 	- https://blackdemographics.com/
 	- https://en.wikipedia.org/wiki/White_Americans#Demographic_information
 
-## Repository
-* analisys.R è esattamente lo stesso codice della presentazione salvo il markdown, usato per comodità per test vari
-* Presentation-PolicesViolence.Rmd è il file Rmd usato per la creazione della presentazione per l'esame

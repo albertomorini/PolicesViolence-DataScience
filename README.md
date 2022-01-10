@@ -9,7 +9,8 @@ All the project is made in Italian language.
 
 ## Dataset: 
  link: https://fatalencounters.org/
- `(tools> download complete dataset)`
+ >`(tools> download complete dataset)`
+
  Quello utilizzato (scaricato il 30/12/2021) è nella repository (fatalEncountersDotOrg.csv)
 
 ## Info sources

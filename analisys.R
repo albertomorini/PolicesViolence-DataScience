@@ -183,25 +183,25 @@ ggplot(blmYears, aes(x=AnnoMese, y=n)) +
   ggtitle("Prima e dopo le proteste BLM", "Movimento BLM fondato nel 2013")
 
 ############################################
-#vediamo se c'è una correlazione tra festività e quantità di vittime, me l'aspetterei poiché nei giorni festivi vi sono più persone "in giro" che festeggiano quindi più potenziali vittime.. anche se non è una cosa matematica, un poliziotto cattivo probabilmente vedendo tante persone non effettua un abuso di forza (davanti a un vasto pubblico pronto a fermarlo etc.)
-
+#Interessante non solo per i giorni (festività, eventi) ma anche per i mesi (stagioni -> in inverno si sta più in casa rispetto alla primavera, cambia qualcosa?)
+#Ricordiamoci che il 2020 è stato l'anno con il maggior numero di vittime
 dayInTheYear <- policesViolence %>%
   filter(format(as.Date(date, "%Y/%m/%d"),"%Y")==2020) %>%
   mutate(day = format(as.Date(date, "%Y/%m/%d"), "%j")) %>%
   group_by(day) %>%
   summarise(n=n()) %>%
   arrange(-n)
-
+dayInTheYear <- dayInTheYear %>%
+  filter(n>5)
 calendR(
         orientation = "portrait", 
         months.pos = 0,
         year = 2020,
         start = "M",
-        special.days = as.numeric(head(dayInTheYear$day,50)), #tagliamo a top 50 
+        special.days = as.numeric(dayInTheYear$day), #tagliamo a top 50 
         special.col =  "#BD0026",
         low.col = "#a1a2af",
-        subtitle = "I 50 giorni con più vittime del 2020",
-        title= "50 giorni del 2020"
+        title= "I giorni con più di 5 vittime nel 2020"
         )
 
 ############################################

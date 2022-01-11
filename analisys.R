@@ -140,13 +140,14 @@ groupedYears <- policesViolence %>%
   group_by(anno) %>%
   summarise (n=n())
 
+#per annotate(geom="text") ho dovuto shiftare al 2019 anche se gli eventi sono accaduti nel 2020 altrimenti l'ettichetta esce dal grafico
 ggplot(groupedYears, aes(x = anno, y = n, group=1)) +
   geom_line(size=1.2, color="#352c2e") +
   geom_point() +
-  annotate(geom="text", x="2020/03", y=1600, label="Breonna Taylor", color="#BD0026",size=4.5)+
-  annotate(geom="point", x="2020/03", y=1570, color="#BD0026")+
-  annotate(geom="text", x="2020/05", y=1500, label="George Floyd", color="#BD0026", size=4.5)+
-  annotate(geom="point", x="2020/05", y=1470, color="#BD0026") +
+  annotate(geom="text", x="2019", y=1600, label="Breonna Taylor", color="#BD0026",size=4.5)+ 
+  annotate(geom="point", x="2020", y=1570, color="#BD0026")+
+  annotate(geom="text", x="2019", y=1500, label="George Floyd", color="#BD0026", size=4.5)+
+  annotate(geom="point", x="2020", y=1470, color="#BD0026") +
   ylab("Numero di vittime")+
   xlab("Anno")+
   ggtitle("Negli anni", "Dal 2000 al 2021")+
@@ -155,7 +156,8 @@ ggplot(groupedYears, aes(x = anno, y = n, group=1)) +
     axis.text.x = element_text(angle=70),
     axis.text.y = element_text(angle=320)
   )+
-  geom_vline(aes(xintercept="2020"), color="#2681e2", size=0.5)
+  geom_vline(aes(xintercept="2020"), color="#2681e2", size=0.5)+
+  geom_smooth(color="#BD0026")
 
 
 ############################################
